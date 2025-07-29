@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { expectedSnake, initSnake } from "./cases";
-import { Snake } from "../../value-objects/snake";
+import { RightDirectionState, Snake } from "../../value-objects/snake";
 
 
 describe("loop test", () => {
@@ -17,8 +17,11 @@ describe("loop test", () => {
       expectedSnake: Snake;
     }) => {
       const snake = new Snake(initSnake.positions);
+      const dmvt = new RightDirectionState();
+      dmvt.setSnake(snake)
+      snake.setDirectionMvt(dmvt);
       snake.move();
-      expect(snake).to.deep.equal(expectedSnake)
+      expect(snake.positions).to.deep.equal(expectedSnake.positions)
     }
   );
 });
