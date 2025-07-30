@@ -20,7 +20,6 @@ export class Snake {
   constructor(startingPositions: TPosition[]) {
     this.positions = startingPositions;
     this.direction = EDirection.Right;
-
   }
 
   setDirectionMvt(directionMvt: State) {
@@ -35,28 +34,32 @@ export class Snake {
 
 export abstract class State {
   protected snake!: Snake;
+  protected snakePositionBuff!: TPosition;
 
   public setSnake(snake: Snake) {
     this.snake = snake;
   }
 
-  public abstract move(): void;
+  public move(): void {
+    this.snakePositionBuff = this.snake.positions[0];
+    this.moveHead();
+    this._moveBody();
+  }
+  private _moveBody() {
+    for (let i = 1; i < this.snake.positions.length; i++) {
+      const buff = this.snake.positions[i];
+      this.snake.positions[i] = this.snakePositionBuff;
+      this.snakePositionBuff = buff;
+    }
+  }
+  public abstract moveHead(): void;
 }
 
 export class RightDirectionState extends State {
-  
-  public move(): void {
-    let snakePositionBuff: TPosition = this.snake.positions[0];
-    if (this.snake.direction === EDirection.Right) {
-      this.snake.positions[0] = {
-        x: this.snake.positions[0].x + 1,
-        y: this.snake.positions[0].y,
-      };
-    }
-    for (let i = 1; i < this.snake.positions.length; i++) {
-      const buff = this.snake.positions[i];
-      this.snake.positions[i] = snakePositionBuff;
-      snakePositionBuff = buff;
-    }
+  moveHead() {
+    this.snake.positions[0] = {
+      x: this.snake.positions[0].x + 1,
+      y: this.snake.positions[0].y,
+    };
   }
 }
