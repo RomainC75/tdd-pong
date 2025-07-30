@@ -19,7 +19,7 @@ export class Snake {
   constructor(startingPositions: TPosition[]) {
     this.positions = startingPositions;
     this.direction = EDirection.Right;
-    
+
     this.setDirectionMvt(new RightDirectionState());
     this.movement?.setSnake(this);
   }
@@ -30,6 +30,7 @@ export class Snake {
   }
 
   move() {
+    console.log("-> before moving : ", this.positions)
     this.movement?.move();
   }
 }
