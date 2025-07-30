@@ -5,7 +5,7 @@ export type SnakeData = {
   direction: EDirection;
 };
 
-export const initSnake: SnakeData = {
+export const initSnakeRight: SnakeData = {
   positions: [
     { x: 5, y: 3 },
     { x: 4, y: 3 },
@@ -14,6 +14,14 @@ export const initSnake: SnakeData = {
   direction: EDirection.Right,
 };
 
+export const initSnakeLeft: SnakeData = {
+  positions: [
+    { x: 3, y: 3 },
+    { x: 4, y: 3 },
+    { x: 5, y: 3 },
+  ],
+  direction: EDirection.Left,
+};
 
 export type TCase = {
   name: string;
@@ -24,7 +32,7 @@ export type TCase = {
 export const testCases: TCase[] = [
   {
     name: "move to the right",
-    init: initSnake,
+    init: initSnakeRight,
     expected: {
       positions: [
         { x: 6, y: 3 },
@@ -36,11 +44,35 @@ export const testCases: TCase[] = [
   },
   {
     name: "move to the top",
-    init: initSnake,
+    init: initSnakeRight,
     expected: {
       positions: [
         { x: 5, y: 2 },
         { x: 5, y: 3 },
+        { x: 4, y: 3 },
+      ],
+      direction: EDirection.Right,
+    },
+  },
+  {
+    name: "move to the bottom",
+    init: initSnakeRight,
+    expected: {
+      positions: [
+        { x: 5, y: 4 },
+        { x: 5, y: 3 },
+        { x: 4, y: 3 },
+      ],
+      direction: EDirection.Right,
+    },
+  },
+  {
+    name: "move to the left",
+    init: initSnakeLeft,
+    expected: {
+      positions: [
+        { x: 2, y: 3 },
+        { x: 3, y: 3 },
         { x: 4, y: 3 },
       ],
       direction: EDirection.Right,
