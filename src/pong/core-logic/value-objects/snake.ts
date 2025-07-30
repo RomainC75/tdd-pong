@@ -26,6 +26,7 @@ export class Snake {
 
   setDirectionMvt(directionMvt: State) {
     this.movement = directionMvt;
+    this.movement?.setSnake(this);
     return this;
   }
 
@@ -67,11 +68,11 @@ export class RightDirectionState extends State {
   }
 }
 
-export class LeftDirectionState extends State {
+export class TopDirectionState extends State {
   moveHead() {
     this.snake.positions[0] = {
-      x: this.snake.positions[0].x - 1,
-      y: this.snake.positions[0].y,
+      x: this.snake.positions[0].x,
+      y: this.snake.positions[0].y -1,
     };
   }
 }
