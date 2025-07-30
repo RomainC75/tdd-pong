@@ -17,9 +17,7 @@ describe("loop test", () => {
       expectedSnake: Snake;
     }) => {
       const snake = new Snake(initSnake.positions);
-      const dmvt = new RightDirectionState();
-      dmvt.setSnake(snake)
-      snake.setDirectionMvt(dmvt);
+
       snake.move();
       expect(snake.positions).to.deep.equal(expectedSnake.positions)
     }
