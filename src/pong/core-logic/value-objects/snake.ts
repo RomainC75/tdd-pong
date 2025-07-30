@@ -1,4 +1,3 @@
-import type { TPosition } from "../use-cases/loop/loop.spec";
 
 export enum EDirection {
   Right = "right",
@@ -20,6 +19,9 @@ export class Snake {
   constructor(startingPositions: TPosition[]) {
     this.positions = startingPositions;
     this.direction = EDirection.Right;
+    
+    this.setDirectionMvt(new RightDirectionState());
+    this.movement?.setSnake(this);
   }
 
   setDirectionMvt(directionMvt: State) {
@@ -59,6 +61,15 @@ export class RightDirectionState extends State {
   moveHead() {
     this.snake.positions[0] = {
       x: this.snake.positions[0].x + 1,
+      y: this.snake.positions[0].y,
+    };
+  }
+}
+
+export class LeftDirectionState extends State {
+  moveHead() {
+    this.snake.positions[0] = {
+      x: this.snake.positions[0].x - 1,
       y: this.snake.positions[0].y,
     };
   }
