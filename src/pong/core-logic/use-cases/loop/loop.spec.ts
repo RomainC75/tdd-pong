@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { testCases, initSnake } from "./cases";
-import { Snake, State, TopDirectionState } from "../../value-objects/snake";
+import { testCases } from "./cases";
+import { BottomDirectionState, LeftDirectionState, Snake, State, TopDirectionState } from "../../value-objects/snake";
 
 describe("loop test", () => {
   it("should init and go to the right", () => {
@@ -12,6 +12,8 @@ describe("loop test", () => {
   it.each`
     initSnakee           | expectedSnakee           | directionState
     ${testCases[1].init} | ${testCases[1].expected} | ${new TopDirectionState()}
+    ${testCases[2].init} | ${testCases[2].expected} | ${new BottomDirectionState()}
+    ${testCases[3].init} | ${testCases[3].expected} | ${new LeftDirectionState()}
   `(
     "should move the snake",
     ({

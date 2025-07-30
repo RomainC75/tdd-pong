@@ -31,7 +31,6 @@ export class Snake {
   }
 
   move() {
-    console.log("-> before moving : ", this.positions)
     this.movement?.move();
   }
 }
@@ -73,6 +72,24 @@ export class TopDirectionState extends State {
     this.snake.positions[0] = {
       x: this.snake.positions[0].x,
       y: this.snake.positions[0].y -1,
+    };
+  }
+}
+
+export class BottomDirectionState extends State {
+  moveHead() {
+    this.snake.positions[0] = {
+      x: this.snake.positions[0].x,
+      y: this.snake.positions[0].y +1,
+    };
+  }
+}
+
+export class LeftDirectionState extends State {
+  moveHead() {
+    this.snake.positions[0] = {
+      x: this.snake.positions[0].x-1,
+      y: this.snake.positions[0].y,
     };
   }
 }
