@@ -1,4 +1,3 @@
-
 export enum EDirection {
   Right = "right",
   Left = "left",
@@ -13,18 +12,21 @@ export type TPosition = {
 
 export class Snake {
   positions: TPosition[];
-  direction: EDirection;
-  movement: State | undefined;
+  movement: State = new RightDirectionState();
 
-  constructor(startingPositions: TPosition[]) {
+  constructor(startingPositions: TPosition[], directionMvt?: State) {
     this.positions = startingPositions;
-    this.direction = EDirection.Right;
-
-    this.setDirectionMvt(new RightDirectionState());
+    
+    if(directionMvt){
+        this.movement = directionMvt;
+    }
     this.movement?.setSnake(this);
   }
 
   setDirectionMvt(directionMvt: State) {
+    if(this.movement!.directionCode%2 == directionMvt.directionCode%2){
+        return
+    }
     this.movement = directionMvt;
     this.movement?.setSnake(this);
     return this;
@@ -38,6 +40,7 @@ export class Snake {
 export abstract class State {
   protected snake!: Snake;
   protected snakePositionBuff!: TPosition;
+  directionCode!: number;
 
   public setSnake(snake: Snake) {
     this.snake = snake;
@@ -59,6 +62,7 @@ export abstract class State {
 }
 
 export class RightDirectionState extends State {
+  public readonly directionCode: number = 0;
   moveHead() {
     this.snake.positions[0] = {
       x: this.snake.positions[0].x + 1,
@@ -68,27 +72,30 @@ export class RightDirectionState extends State {
 }
 
 export class TopDirectionState extends State {
+  public readonly directionCode: number = 3;
   moveHead() {
     this.snake.positions[0] = {
       x: this.snake.positions[0].x,
-      y: this.snake.positions[0].y -1,
+      y: this.snake.positions[0].y - 1,
     };
   }
 }
 
 export class BottomDirectionState extends State {
+  public readonly directionCode: number = 1;
   moveHead() {
     this.snake.positions[0] = {
       x: this.snake.positions[0].x,
-      y: this.snake.positions[0].y +1,
+      y: this.snake.positions[0].y + 1,
     };
   }
 }
 
 export class LeftDirectionState extends State {
+  public readonly directionCode: number = 2;
   moveHead() {
     this.snake.positions[0] = {
-      x: this.snake.positions[0].x-1,
+      x: this.snake.positions[0].x - 1,
       y: this.snake.positions[0].y,
     };
   }
