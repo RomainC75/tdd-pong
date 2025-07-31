@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { testCases } from "./cases";
+import { longSnakeTestCases, testCases } from "./cases";
 import {
   BottomDirectionState,
   LeftDirectionState,
@@ -61,4 +61,32 @@ describe("loop test", () => {
       expect(snake.movement?.directionCode).equal(initDirectionState.directionCode);
     }
   );
+
+  it("should detect a collision if the snake hits himself", ()=>{
+    const snake = new Snake(longSnakeTestCases[0].expected.positions, new TopDirectionState())
+    const collision = snake.move()
+
+    expect(collision).equal(true);
+  })
+
+  it.each`
+      initSnake            | initDirectionState
+    ${testCases[1].init} | ${new TopDirectionState()} 
+    ${testCases[3].init} | ${new LeftDirectionState()} 
+  `("should detect a collision if the snake hits a wall", ({
+      initSnake,
+      initDirectionState,
+    }: {
+      initSnake: Snake;
+      initDirectionState: State;
+    })=>{
+    const snake = new Snake(initSnake.positions, initDirectionState )
+    
+    snake.move()
+    snake.move()
+    snake.move()
+    const collision = snake.move()
+
+    expect(collision).equal(true);
+  })
 });

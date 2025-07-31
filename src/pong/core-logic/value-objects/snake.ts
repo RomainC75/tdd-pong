@@ -10,6 +10,8 @@ export type TPosition = {
   y: number;
 };
 
+export const BOARD_DIMENSIONS: [number, number] = [300, 200];
+
 export class Snake {
   positions: TPosition[];
   movement: State = new RightDirectionState();
@@ -32,8 +34,22 @@ export class Snake {
     return this;
   }
 
+  private _isAutoCollision(): boolean{
+    return this.positions.some((p1, i1, array)=>{
+        return array.some((p2, i2)=>i1 != i2 && p1.x==p2.x && p1.y==p2.y)
+    })
+  }
+
+  private _isWallCollision(): boolean{
+    return this.positions.some(bodyPart => {
+        return bodyPart.x < 0 || bodyPart.x >= BOARD_DIMENSIONS[0] || bodyPart.y < 0 || bodyPart.y >= BOARD_DIMENSIONS[1] 
+    })
+  }
+
   move() {
+      console.log("--> before mvt", this.positions)
     this.movement?.move();
+    return this._isAutoCollision() || this._isWallCollision()
   }
 }
 
