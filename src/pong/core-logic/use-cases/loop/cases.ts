@@ -1,8 +1,7 @@
-import { EDirection, type TPosition } from "../../value-objects/snake";
+import { type TPosition } from "../../value-objects/snake";
 
 export type SnakeData = {
   positions: TPosition[];
-  direction: EDirection;
 };
 
 export const initSnakeRight: SnakeData = {
@@ -11,7 +10,6 @@ export const initSnakeRight: SnakeData = {
     { x: 4, y: 3 },
     { x: 3, y: 3 },
   ],
-  direction: EDirection.Right,
 };
 
 export const initSnakeLeft: SnakeData = {
@@ -20,7 +18,6 @@ export const initSnakeLeft: SnakeData = {
     { x: 4, y: 3 },
     { x: 5, y: 3 },
   ],
-  direction: EDirection.Left,
 };
 
 export type TCase = {
@@ -39,7 +36,6 @@ export const testCases: TCase[] = [
         { x: 5, y: 3 },
         { x: 4, y: 3 },
       ],
-      direction: EDirection.Right,
     },
   },
   {
@@ -51,7 +47,6 @@ export const testCases: TCase[] = [
         { x: 5, y: 3 },
         { x: 4, y: 3 },
       ],
-      direction: EDirection.Right,
     },
   },
   {
@@ -63,7 +58,6 @@ export const testCases: TCase[] = [
         { x: 5, y: 3 },
         { x: 4, y: 3 },
       ],
-      direction: EDirection.Right,
     },
   },
   {
@@ -75,7 +69,22 @@ export const testCases: TCase[] = [
         { x: 3, y: 3 },
         { x: 4, y: 3 },
       ],
-      direction: EDirection.Right,
+    },
+  },
+];
+
+export const longSnakeTestCases: TCase[] = [
+  {
+    name: "long - move to the top",
+    init: initSnakeLeft,
+    expected: {
+      positions: [
+        { x: 2, y: 2 },
+        { x: 1, y: 2 },
+        { x: 1, y: 1 },
+        { x: 2, y: 1 },
+        { x: 3, y: 1 },
+      ],
     },
   },
 ];
