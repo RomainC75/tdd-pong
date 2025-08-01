@@ -8,6 +8,7 @@ import {
   State,
   TopDirectionState,
 } from "../../value-objects/snake";
+import { Game } from "../../value-objects/game";
 
 describe("loop test", () => {
   it("should init and go to the right", () => {
@@ -33,8 +34,9 @@ describe("loop test", () => {
       directionState: State;
     }) => {
       const snake = new Snake([...initSnakee.positions], directionState);
+      const game = new Game(snake)
 
-      snake.move();
+      game.play()
       expect(snake.positions).to.deep.equal(expectedSnakee.positions);
     }
   );
@@ -64,7 +66,8 @@ describe("loop test", () => {
 
   it("should detect a collision if the snake hits himself", ()=>{
     const snake = new Snake(longSnakeTestCases[0].expected.positions, new TopDirectionState())
-    const collision = snake.move()
+    const game = new Game(snake)
+    const collision = game.play()
 
     expect(collision).equal(true);
   })
@@ -81,12 +84,14 @@ describe("loop test", () => {
       initDirectionState: State;
     })=>{
     const snake = new Snake(initSnake.positions, initDirectionState )
-    
-    snake.move()
-    snake.move()
-    snake.move()
-    const collision = snake.move()
+    const game = new Game(snake)
+    game.play();
+    game.play();
+    game.play();
+    const collision = game.play();
 
     expect(collision).equal(true);
   })
+
+
 });

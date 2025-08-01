@@ -47,7 +47,6 @@ export class Snake {
   }
 
   move() {
-      console.log("--> before mvt", this.positions)
     this.movement?.move();
     return this._isAutoCollision() || this._isWallCollision()
   }
