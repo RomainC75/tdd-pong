@@ -8,12 +8,13 @@ import {
   State,
   TopDirectionState,
 } from "../../value-objects/snake";
-import { Game } from "../../value-objects/game";
+import { FakePositionGenerator, Game } from "../../value-objects/game";
 
 describe("loop test", () => {
   it("should init and go to the right", () => {
     const snake = new Snake([...testCases[0].init.positions]);
-    snake.move();
+    const preyPosition = {x: 15, y: 15};
+    snake.move(preyPosition);
     expect(snake.positions).to.deep.equal(testCases[0].expected.positions);
   });
 
@@ -34,7 +35,10 @@ describe("loop test", () => {
       directionState: State;
     }) => {
       const snake = new Snake([...initSnakee.positions], directionState);
-      const game = new Game(snake)
+      const fakePositionGenerator = new FakePositionGenerator();
+
+      fakePositionGenerator.expectedGeneratedPosition= {x: 10, y: 4};
+      const game = new Game(snake, fakePositionGenerator)
 
       game.play()
       expect(snake.positions).to.deep.equal(expectedSnakee.positions);
@@ -65,8 +69,12 @@ describe("loop test", () => {
   );
 
   it("should detect a collision if the snake hits himself", ()=>{
-    const snake = new Snake(longSnakeTestCases[0].expected.positions, new TopDirectionState())
-    const game = new Game(snake)
+    const snake = new Snake([...longSnakeTestCases[0].expected.positions], new TopDirectionState())
+
+    const fakePositionGenerator = new FakePositionGenerator();
+    fakePositionGenerator.expectedGeneratedPosition= {x: 10, y: 4};
+
+    const game = new Game(snake, fakePositionGenerator)
     const collision = game.play()
 
     expect(collision).equal(true);
@@ -83,8 +91,12 @@ describe("loop test", () => {
       initSnake: Snake;
       initDirectionState: State;
     })=>{
-    const snake = new Snake(initSnake.positions, initDirectionState )
-    const game = new Game(snake)
+    const snake = new Snake([...initSnake.positions], initDirectionState )
+    
+    const fakePositionGenerator = new FakePositionGenerator();
+    fakePositionGenerator.expectedGeneratedPosition= {x: 10, y: 4};
+
+    const game = new Game(snake, fakePositionGenerator)
     game.play();
     game.play();
     game.play();
@@ -93,5 +105,16 @@ describe("loop test", () => {
     expect(collision).equal(true);
   })
 
+  it("should get longer if eats a fruit", ()=> {
+    console.log("-> init : ", ...testCases[0].init.positions)
+    const snake = new Snake([...testCases[0].init.positions], new RightDirectionState())
+    
+    const fakePositionGenerator = new FakePositionGenerator();
+    fakePositionGenerator.expectedGeneratedPosition= {x: 6, y: 3}
+    
+    const game = new Game(snake, fakePositionGenerator);
 
+    game.play();
+    expect(snake.positions.length).equal(testCases[0].init.positions.length+1)
+  })
 });
