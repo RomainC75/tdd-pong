@@ -46,8 +46,8 @@ export class Snake {
     })
   }
 
-  move() {
-    this.movement?.move();
+  move(preyPosition: TPosition): boolean {
+    this.movement?.move(preyPosition);
     return this._isAutoCollision() || this._isWallCollision()
   }
 }
@@ -61,9 +61,14 @@ export abstract class State {
     this.snake = snake;
   }
 
-  public move(): void {
+  public move(preyPosition: TPosition): void {
     this.snakePositionBuff = this.snake.positions[0];
-    this.moveHead();
+    const newHeadPosition = this.newHeadPosition();
+    if (newHeadPosition.x === preyPosition.x && newHeadPosition.y === preyPosition.y){
+        this.snake.positions.unshift(newHeadPosition)
+    }else {
+        this.snake.positions[0] = newHeadPosition
+    }
     this._moveBody();
   }
   private _moveBody() {
@@ -73,13 +78,13 @@ export abstract class State {
       this.snakePositionBuff = buff;
     }
   }
-  public abstract moveHead(): void;
+  public abstract newHeadPosition(): TPosition;
 }
 
 export class RightDirectionState extends State {
   public readonly directionCode: number = 0;
-  moveHead() {
-    this.snake.positions[0] = {
+  newHeadPosition() {
+    return {
       x: this.snake.positions[0].x + 1,
       y: this.snake.positions[0].y,
     };
@@ -88,8 +93,8 @@ export class RightDirectionState extends State {
 
 export class TopDirectionState extends State {
   public readonly directionCode: number = 3;
-  moveHead() {
-    this.snake.positions[0] = {
+  newHeadPosition() {
+    return {
       x: this.snake.positions[0].x,
       y: this.snake.positions[0].y - 1,
     };
@@ -98,8 +103,8 @@ export class TopDirectionState extends State {
 
 export class BottomDirectionState extends State {
   public readonly directionCode: number = 1;
-  moveHead() {
-    this.snake.positions[0] = {
+  newHeadPosition() {
+    return {
       x: this.snake.positions[0].x,
       y: this.snake.positions[0].y + 1,
     };
@@ -108,8 +113,8 @@ export class BottomDirectionState extends State {
 
 export class LeftDirectionState extends State {
   public readonly directionCode: number = 2;
-  moveHead() {
-    this.snake.positions[0] = {
+  newHeadPosition() {
+    return {
       x: this.snake.positions[0].x - 1,
       y: this.snake.positions[0].y,
     };
