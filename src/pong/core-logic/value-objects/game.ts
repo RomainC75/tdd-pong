@@ -8,18 +8,12 @@ export class Game {
         private readonly _positionGenerator: IPositionGenerator,
     ) {
         this._initPrey()
-        
     }
 
     private _initPrey(){
         const position = this._positionGenerator.generate(this._boardDimensions, this._snake.positions)
-        console.log("-< position : ", position)
         this._prey = new Prey(position);
 
-    }
-
-    private _hasSnakeEatenThePrey(): boolean{
-        return this._snake.positions[0].x === this._prey.position.x && this._snake.positions[0].y === this._prey.position.y
     }
 
     play(): boolean{
@@ -48,7 +42,6 @@ export interface IPositionGenerator {
 export class FakePositionGenerator  implements IPositionGenerator{
     expectedGeneratedPosition!: TPosition;
     generate(boardDimensions: [number, number], snakePositions: TPosition[]): TPosition{
-        console.log("expected position : ", this.expectedGeneratedPosition)
         return this.expectedGeneratedPosition
     }
 }
