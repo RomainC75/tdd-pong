@@ -1,3 +1,5 @@
+import type { Game } from "./game";
+
 export enum EDirection {
   Right = "right",
   Left = "left",
@@ -15,6 +17,7 @@ export const BOARD_DIMENSIONS: [number, number] = [300, 200];
 export class Snake {
   positions: TPosition[];
   movement: State = new RightDirectionState();
+  game!: Game;
 
   constructor(startingPositions: TPosition[], directionMvt?: State) {
     this.positions = startingPositions;
@@ -46,9 +49,14 @@ export class Snake {
     })
   }
 
-  move(preyPosition: TPosition): boolean {
-    this.movement?.move(preyPosition);
+  move(): boolean {
+    const prey = this.game.prey;
+    this.movement?.move(prey.position);
     return this._isAutoCollision() || this._isWallCollision()
+  }
+
+  setGame(game: Game){
+    this.game = game;
   }
 }
 
@@ -66,6 +74,7 @@ export abstract class State {
     const newHeadPosition = this.newHeadPosition();
     if (newHeadPosition.x === preyPosition.x && newHeadPosition.y === preyPosition.y){
         this.snake.positions.unshift(newHeadPosition)
+        this.snake.game.scoreUp()
     }else {
         this.snake.positions[0] = newHeadPosition
     }
