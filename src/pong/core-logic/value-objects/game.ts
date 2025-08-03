@@ -58,6 +58,7 @@ export class Game implements IObserved{
     scoreUp(){
         this._score ++
         this.notify()
+        this._initPrey();
     }
 }
 
@@ -76,8 +77,11 @@ export interface IPositionGenerator {
 }
 
 export class FakePositionGenerator  implements IPositionGenerator{
-    expectedGeneratedPosition!: TPosition;
+    expectedGeneratedPositions!: TPosition[];
+    index = 0
     generate(boardDimensions: [number, number], snakePositions: TPosition[]): TPosition{
-        return this.expectedGeneratedPosition
+        const expectedGeneratedPosition = this.expectedGeneratedPositions[this.index];
+        this.index = 1;
+        return expectedGeneratedPosition
     }
 }
