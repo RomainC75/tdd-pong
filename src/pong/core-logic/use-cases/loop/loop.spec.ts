@@ -1,5 +1,10 @@
 import { describe, it, expect } from "vitest";
-import { initSnakeLeft, initSnakeRight, longSnakeTestCases, testCases } from "./cases";
+import {
+  initSnakeLeft,
+  initSnakeRight,
+  longSnakeTestCases,
+  testCases,
+} from "./cases";
 import {
   BottomDirectionState,
   LeftDirectionState,
@@ -10,12 +15,18 @@ import {
   type TPosition,
 } from "../../value-objects/snake";
 import { FakePositionGenerator, Game } from "../../value-objects/game";
+import { FakeGameObserver } from "../../../adapters/primary/observers/fakeGameObserver";
 
 describe("loop test", () => {
   it("should init and go to the right", () => {
     const snake = new Snake([...testCases[0].init.positions]);
-    const preyPosition = { x: 15, y: 15 };
-    snake.move(preyPosition);
+
+    const fakePositionGenerator = new FakePositionGenerator();
+
+    fakePositionGenerator.expectedGeneratedPosition = { x: 15, y: 15 };
+    const game = new Game(snake, fakePositionGenerator);
+    game.play();
+
     expect(snake.positions).to.deep.equal(testCases[0].expected.positions);
   });
 
@@ -115,11 +126,11 @@ describe("loop test", () => {
   );
 
   it.each`
-    initSnake            | initDirectionState           | preyPosition
-    ${initSnakeRight} | ${new RightDirectionState()} | ${{ x: 6, y: 3 }}
-    ${initSnakeRight} | ${new TopDirectionState()}   | ${{ x: 5, y: 2 }}
-    ${initSnakeRight} | ${new BottomDirectionState()}   | ${{ x: 5, y: 4 }}
-    ${initSnakeLeft} | ${new LeftDirectionState()}   | ${{ x: 2, y: 3 }}
+    initSnake         | initDirectionState            | preyPosition
+    ${initSnakeRight} | ${new RightDirectionState()}  | ${{ x: 6, y: 3 }}
+    ${initSnakeRight} | ${new TopDirectionState()}    | ${{ x: 5, y: 2 }}
+    ${initSnakeRight} | ${new BottomDirectionState()} | ${{ x: 5, y: 4 }}
+    ${initSnakeLeft}  | ${new LeftDirectionState()}   | ${{ x: 2, y: 3 }}
   `(
     "should get longer if eats a fruit",
     ({
@@ -141,6 +152,27 @@ describe("loop test", () => {
       expect(snake.positions.length).equal(
         testCases[0].init.positions.length + 1
       );
+      // ! the prey should disapear
     }
   );
+  
+  it("should score a point if the snake eats the prey", () => {
+    const snake = new Snake(
+      [...initSnakeRight.positions],
+      new RightDirectionState()
+    );
+    const fakePositionGenerator = new FakePositionGenerator();
+    fakePositionGenerator.expectedGeneratedPosition = { x: 6, y: 3 };
+
+    const game = new Game(snake, fakePositionGenerator);
+
+    const fakeGameObserver = new FakeGameObserver();
+    game.attach(fakeGameObserver);
+
+    game.play();
+
+    expect(fakeGameObserver.lastObserver).to.deep.equal({
+      score: 1,
+    });
+  });
 });
