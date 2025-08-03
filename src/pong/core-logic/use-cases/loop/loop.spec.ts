@@ -23,7 +23,7 @@ describe("loop test", () => {
 
     const fakePositionGenerator = new FakePositionGenerator();
 
-    fakePositionGenerator.expectedGeneratedPosition = { x: 15, y: 15 };
+    fakePositionGenerator.expectedGeneratedPositions = [{ x: 15, y: 15 }, { x: 1, y: 1 }];
     const game = new Game(snake, fakePositionGenerator);
     game.play();
 
@@ -49,7 +49,7 @@ describe("loop test", () => {
       const snake = new Snake([...initSnakee.positions], directionState);
       const fakePositionGenerator = new FakePositionGenerator();
 
-      fakePositionGenerator.expectedGeneratedPosition = { x: 10, y: 4 };
+      fakePositionGenerator.expectedGeneratedPositions = [{ x: 10, y: 4 }, {x: 1, y: 1}];
       const game = new Game(snake, fakePositionGenerator);
 
       game.play();
@@ -89,7 +89,7 @@ describe("loop test", () => {
     );
 
     const fakePositionGenerator = new FakePositionGenerator();
-    fakePositionGenerator.expectedGeneratedPosition = { x: 10, y: 4 };
+    fakePositionGenerator.expectedGeneratedPositions =[{ x: 10, y: 4 }, { x: 1, y: 1 }];
 
     const game = new Game(snake, fakePositionGenerator);
     const collision = game.play();
@@ -113,7 +113,7 @@ describe("loop test", () => {
       const snake = new Snake([...initSnake.positions], initDirectionState);
 
       const fakePositionGenerator = new FakePositionGenerator();
-      fakePositionGenerator.expectedGeneratedPosition = { x: 10, y: 4 };
+      fakePositionGenerator.expectedGeneratedPositions = [{ x: 10, y: 4 }, { x: 1, y: 1 }];
 
       const game = new Game(snake, fakePositionGenerator);
       game.play();
@@ -127,10 +127,10 @@ describe("loop test", () => {
 
   it.each`
     initSnake         | initDirectionState            | preyPosition
-    ${initSnakeRight} | ${new RightDirectionState()}  | ${{ x: 6, y: 3 }}
-    ${initSnakeRight} | ${new TopDirectionState()}    | ${{ x: 5, y: 2 }}
-    ${initSnakeRight} | ${new BottomDirectionState()} | ${{ x: 5, y: 4 }}
-    ${initSnakeLeft}  | ${new LeftDirectionState()}   | ${{ x: 2, y: 3 }}
+    ${initSnakeRight} | ${new RightDirectionState()}  | ${[{ x: 6, y: 3 }, { x: 1, y: 1 }]}
+    ${initSnakeRight} | ${new TopDirectionState()}    | ${[{ x: 5, y: 2 }, { x: 1, y: 1 }]}
+    ${initSnakeRight} | ${new BottomDirectionState()} | ${[{ x: 5, y: 4 }, { x: 1, y: 1 }]}
+    ${initSnakeLeft}  | ${new LeftDirectionState()}   | ${[{ x: 2, y: 3 }, { x: 1, y: 1 }]}
   `(
     "should get longer if eats a fruit",
     ({
@@ -140,11 +140,11 @@ describe("loop test", () => {
     }: {
       initSnake: Snake;
       initDirectionState: State;
-      preyPosition: TPosition;
+      preyPosition: TPosition[];
     }) => {
       const snake = new Snake([...initSnake.positions], initDirectionState);
       const fakePositionGenerator = new FakePositionGenerator();
-      fakePositionGenerator.expectedGeneratedPosition = preyPosition;
+      fakePositionGenerator.expectedGeneratedPositions = preyPosition;
 
       const game = new Game(snake, fakePositionGenerator);
 
@@ -156,13 +156,14 @@ describe("loop test", () => {
     }
   );
   
-  it("should score a point if the snake eats the prey", () => {
+  it("should score a point if the snake eats the prey and generate a new prey at a new position", () => {
     const snake = new Snake(
       [...initSnakeRight.positions],
       new RightDirectionState()
     );
     const fakePositionGenerator = new FakePositionGenerator();
-    fakePositionGenerator.expectedGeneratedPosition = { x: 6, y: 3 };
+    const preyPositions = [{ x: 6, y: 3 }, { x: 1, y: 1 }]
+    fakePositionGenerator.expectedGeneratedPositions = preyPositions;
 
     const game = new Game(snake, fakePositionGenerator);
 
@@ -174,5 +175,6 @@ describe("loop test", () => {
     expect(fakeGameObserver.lastObserver).to.deep.equal({
       score: 1,
     });
+    expect(game.prey.position).toEqual(preyPositions[1])
   });
 });
